@@ -1,7 +1,7 @@
-#include "Post.h"
+#include "PostController.h"
 
 // Add definition of your processing function here
-void Post::getPosts(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback) const
+void PostController::getPosts(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback) const
 {
     Json::Value ret;
     ret["result"] = "ok";
@@ -9,7 +9,7 @@ void Post::getPosts(const HttpRequestPtr& req, std::function<void (const HttpRes
     callback(resp);
 }
 
-void Post::getPost(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback) const
+void PostController::getPost(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback) const
 {
     Json::Value ret;
     ret["result"] = "ok";
@@ -17,7 +17,7 @@ void Post::getPost(const HttpRequestPtr& req, std::function<void (const HttpResp
     callback(resp);
 }
 
-void Post::addPost(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback) const
+void PostController::addPost(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback) const
 {
     Json::Value ret;
     ret["result"] = "ok";
@@ -25,7 +25,7 @@ void Post::addPost(const HttpRequestPtr& req, std::function<void (const HttpResp
     callback(resp);
 }
 
-void Post::updatePost(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback) const
+void PostController::updatePost(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback) const
 {
     Json::Value ret;
     ret["result"] = "ok";
@@ -33,7 +33,7 @@ void Post::updatePost(const HttpRequestPtr& req, std::function<void (const HttpR
     callback(resp);
 }
 
-void Post::deletePost(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback) const
+void PostController::deletePost(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback) const
 {
     Json::Value ret;
     ret["result"] = "ok";
