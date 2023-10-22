@@ -6,5 +6,6 @@ void PostController::asyncHandleHttpRequest(const HttpRequestPtr& req, std::func
     Json::Value ret;
     ret["result"] = "posts page";
     auto resp = HttpResponse::newHttpJsonResponse(ret);
+    resp->setStatusCode(k200OK);
     callback(resp);
 }
