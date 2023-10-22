@@ -1,14 +1,10 @@
 #include "HomeController.h"
 
-void HomeController::asyncHandleHttpRequest(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback)
+// Add definition of your processing function here
+void HomeController::get(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback) const
 {
-    // write your application logic here
     Json::Value ret;
-    ret["result"] = "home page";
+    ret["result"] = "ok";
     auto resp = HttpResponse::newHttpJsonResponse(ret);
     callback(resp);
-
-    // auto resp = HttpResponse::newHttpResponse();
-    // resp->setBody("<p>Hello, World!</p>");
-    // callback(resp);
 }
