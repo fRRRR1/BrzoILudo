@@ -1,32 +1,70 @@
 #include <drogon/drogon.h>
-int main() {
-    //Set HTTP listener address and port
-    drogon::app().addListener("0.0.0.0", 5555);
-    //Load config file
-    //drogon::app().loadConfigFile("../config.json");
-    //drogon::app().loadConfigFile("../config.yaml");
-    //Run HTTP framework,the method will block in the internal event loop
+using namespace drogon;
 
-    // example of using orm to query database
-    // app().registerHandler("/arsa", [](HttpRequestPtr req) -> Task<HttpResponsePtr>
-    // {
-    //     auto clientPtr = drogon::app().getDbClient();
-    //     clientPtr->execSqlAsync("select * from posts",
-    //     [](const drogon::orm::Result &result) {
-    //         std::cout << result.size() << " rows selected!" << std::endl;
-    //         int i = 0;
-    //         for (auto row : result)
-    //         {
-    //             std::cout << i++ << ": user name is " << row["user_name"].as<std::string>() << std::endl;
-    //         }
-    //     },
-    //     [](const drogon::orm::DrogonDbException &e) {
-    //         std::cerr << "error:" << e.base().what() << std::endl;
-    //     },
-    //     "default");
-    // });
+int main()
+{
+    // `registerHandler()` adds a handler to the desired path. The handler is
+    // responsible for generating a HTTP response upon an HTTP request being
+    // sent to Drogon
+    app().registerHandler(
+        "/",
+        [](const HttpRequestPtr &,
+           std::function<void(const HttpResponsePtr &)> &&callback) {
+            auto resp = HttpResponse::newHttpResponse();
+            resp->setBody("Hello, World!");
+            callback(resp);
+        },
+        {Get});
 
+    // `registerHandler()` also supports parsing and passing the path as
+    // parameters to the handler. Parameters are specified using {}. The text
+    // inside the {} does not correspond to the index of parameter passed to the
+    // handler (nor it has any meaning). Instead, it is only to make it easier
+    // for users to recognize the function of each parameter.
+    app().registerHandler(
+        "/user/{user-name}",
+        [](const HttpRequestPtr &,
+           std::function<void(const HttpResponsePtr &)> &&callback,
+           const std::string &name) {
+            auto resp = HttpResponse::newHttpResponse();
+            resp->setBody("Hello, " + name + "!");
+            callback(resp);
+        },
+        {Get});
+
+    // You can also specify that the parameter is in the query section of the
+    // URL!
+    app().registerHandler(
+        "/hello?user={user-name}",
+        [](const HttpRequestPtr &,
+           std::function<void(const HttpResponsePtr &)> &&callback,
+           const std::string &name) {
+            auto resp = HttpResponse::newHttpResponse();
+            resp->setBody("Hello, " + name + "!");
+            callback(resp);
+        },
+        {Get});
+
+    // Or, if you want to, instead of asking drogon to parse it for you. You can
+    // parse the request yourselves.
+    app().registerHandler(
+        "/hello_user",
+        [](const HttpRequestPtr &req,
+           std::function<void(const HttpResponsePtr &)> &&callback) {
+            auto resp = HttpResponse::newHttpResponse();
+            auto name = req->getOptionalParameter<std::string>("user");
+            if (!name)
+                resp->setBody("Please tell me your name");
+            else
+                resp->setBody("Hello, " + name.value() + "!");
+            callback(resp);
+        },
+        {Get});
+
+    // Ask Drogon to listen on 127.0.0.1 port 5555. Drogon supports listening
+    // on multiple IP addresses by adding multiple listeners. For example, if
+    // you want the server also listen on 127.0.0.1 port 5555. Just add another
+    // line of addListener("127.0.0.1", 5555)
     LOG_INFO << "Server running on 127.0.0.1:5555";
-    drogon::app().run();
-    return 0;
+    app().addListener("127.0.0.1", 5555).run();
 }
